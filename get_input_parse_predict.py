@@ -7,8 +7,7 @@ import random
 # Input parser based on first project
 # 
 
-std_path = str(sys.path[0])
-rnd_pic = random.choice(glob.glob(os.path.join(std_path, 'flowers/test/*/*.jpg')))
+from get_input_parse_train import std_path
 
 def get_input_parse_predict():
     """
@@ -31,17 +30,17 @@ def get_input_parse_predict():
     parser.add_argument('--top_k', type=int, default = 3,
                         help='Return top KK most likely classes (default: 3')
     
-    parser.add_argument('--img_path', type=str, default = os.path.join(std_path, 'flowers/checkpoint.pth'),
-                        help='Path that contains the checkpoint (default: ./checkpoint.pth ')
+    parser.add_argument('--img_path', type=str, default = 'flowers/test/1/image_06743.jpg',
+                        help='Path that contains the checkpoint (default: ./flowers/test/1/image_06743.jpg')
     
-    parser.add_argument('--load_path', type=str, default = os.path.join(std_path, 'checkpoint.pth'),
+    parser.add_argument('checkpoint', action='store', type=str, default = '/checkpoint.pth',
                         help='Path that contains the checkpoint (default: ./checkpoint.pth ')
         
     parser.add_argument('--catg_names', type=str, default = 'cat_to_name.json',
-                        help='Mapping of categories to real names (default: cat_to_name.json')   
+                        help='Mapping of categories to real names (default: ./cat_to_name.json')   
    
-    parser.add_argument('--gpu', type=str, default = True,
-                        help='Use GPU for inference (default: True)')
+    parser.add_argument('--gpu', type=bool, default = True,
+                        help='True/False: Use GPU for inference. default: True)')
     
     
     return parser.parse_args()

@@ -253,7 +253,6 @@ checkpoint = {    'model': model, # vgg16(pretrained)
 
 torch.save(checkpoint, os.path.join(ckpt_save_dir, '/checkpoint.pth'))
 print("Checkpoint saved:", os.path.join(ckpt_save_dir, '/checkpoint.pth'))
-print(checkpoint)
 print("\n")
 end_time = time()
 tot_time = end_time - start_time #calculate difference between end time and start time

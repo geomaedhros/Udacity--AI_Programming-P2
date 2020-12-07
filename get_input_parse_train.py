@@ -34,10 +34,10 @@ def get_input_parse_train():
     parser = argparse.ArgumentParser()
     
     # Create command line arguments as mentioned above using add_argument() from ArguementParser method
-    parser.add_argument('data_dir', type=str, default = os.path.join(std_path, 'flowers'),
+    parser.add_argument('data_dir', type=str, default = 'flowers',
                         help='Folder that contains the images (default: ./flowers ')
     
-    parser.add_argument('--save_dir', type=str, default = std_path,
+    parser.add_argument('--save_dir', action='store', type=str, default = std_path,
                         help='Folder to save checkpoint.pth in (default: current path)')
     
     parser.add_argument('--arch', type=str, default = 'vgg', 
@@ -52,8 +52,8 @@ def get_input_parse_train():
     parser.add_argument('--eps', type=int, default = 5,
                         help='Sets the epochs for the training model (default: 5)')
     
-    parser.add_argument('--gpu', type=str, default = True,
-                        help='The device where training will be performed (default: True)')
+    parser.add_argument('--gpu', type=bool, default = True,
+                        help='True/False: device where training will be performed (default: True)')
     
     
     return parser.parse_args()

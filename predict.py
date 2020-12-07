@@ -19,7 +19,7 @@ from get_input_parse_predict import get_input_parse_predict
 
 args_pred = get_input_parse_predict()
 
-ckpt_path = args_pred.load_path
+ckpt_path = args_pred.checkpoint
 print('Loading checkpoint:', ckpt_path)
 top_k = args_pred.top_k
 catg_names = args_pred.catg_names
