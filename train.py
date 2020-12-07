@@ -33,7 +33,9 @@ from PIL import Image  # to import/transform images
 from collections import OrderedDict
 
 import json
-
+with open('cat_to_name.json', 'r') as f:
+    catg_to_name = json.load(f)
+    
 # Imports functions created for this program
 from get_input_parse_train import get_input_parse_train
 

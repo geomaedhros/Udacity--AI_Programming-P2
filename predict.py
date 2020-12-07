@@ -17,12 +17,16 @@ import glob
 
 from get_input_parse_predict import get_input_parse_predict
 
+import json
+
+with open('cat_to_name.json', 'r') as f:
+    catg_to_name = json.load(f)
+
 args_pred = get_input_parse_predict()
 
 ckpt_path = args_pred.checkpoint
 print('Loading checkpoint:', ckpt_path)
 top_k = args_pred.top_k
-catg_names = args_pred.catg_names
 
 # Use GPU if selected and available
 if args_pred.gpu:
@@ -32,7 +36,7 @@ if args_pred.gpu:
 
 def load_checkpoint(filepath = ckpt_path):
     
-    checkpoint =  torch.load(filepath, map_location = device)
+    checkpoint =  torch.load(filepath, map_location = "cpu")
     model = models.vgg16(pretrained=True)
     optimizer = optim.Adam(model.classifier.parameters(), lr=0.003) 
     
@@ -43,7 +47,7 @@ def load_checkpoint(filepath = ckpt_path):
     model.input_size = checkpoint['input_size']
     model.output_size = checkpoint['output_size']
     model.batch_size = checkpoint['batch_size']
-    model.class_to_index = checkpoint['class_to_idx']
+    model.class_to_idx = checkpoint['class_to_idx']
     optimizer.load_state_dict(checkpoint['optimizer_dict']) 
 
     for param in model.parameters():
@@ -165,34 +169,16 @@ ps, classes = predict(img_path, model)
 # Convert results to lists
 results_probs = ps.tolist()[0]
 results_classes = classes.tolist()[0]
+results = zip(results_classes, results_probs)
 
 # Iterate through lists to lookup the names and probs and assign them to list catg
-catgs = []
-for i in range(5):
-    catgs.append(catg_to_name[str(results_classes[i])])
-    
-# Display an image along with the top 5 classes
-image = Image.open(img_path)
+ind = []
 
-fig, ax1 = plt.subplots()
+# Display the top_k classes
 
-ax1.axis('off')
-ax1.set_title(catg_to_name[str(results_classes[0])].capitalize())
-ax1.imshow(image)
+for i in range(len(model.class_to_idx.items())):
+    ind.append(list(model.class_to_idx.items())[i])
 
+for result in results:
+    print("{}: {:.2%}".format(catg_to_name[ind[result[0]][0]].capitalize(), result[1]))
 
-plt.rcdefaults()          # Restore the rc params from Matplotlib's internal default style. 
-                          # source: https://matplotlib.org/3.1.1/gallery/lines_bars_and_markers/barh.html
-
-fig, ax2 = plt.subplots()
-
-y_pos = np.arange(len(catgs))
-
-ax2.set_yticks(y_pos)
-ax2.set_yticklabels(catgs)
-ax2.barh(y_pos, results_probs)
-ax2.invert_yaxis()  # labels read top-to-bottom
-ax2.set_xlabel('Probabilities')
-ax2.set_title('Predicted labels')
-
-plt.show()
